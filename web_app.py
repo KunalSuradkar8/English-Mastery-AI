@@ -4,7 +4,7 @@ import english_tutor  # आपला तोच जुना AI मेंदू!
 # १. वेबसाईटची डिझाईन (UI)
 st.set_page_config(page_title="AI English Tutor", page_icon="🎓")
 st.title("🚀 English Mastery AI Tutor")
-st.caption("Developed with ❤️ by [Kunal](https://github.com/तुझे_github_username)")
+st.caption("Developed with ❤️ by [Kunal](https://github.com/KunalSuradkar8)")
 
 st.write("तुझा वैयक्तिक इंग्रजी शिक्षक आता इंटरनेटवर!")
 
