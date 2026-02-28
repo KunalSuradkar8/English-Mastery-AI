@@ -1,18 +1,36 @@
 # फाईलचे नाव: english_tutor.py
-# काम: संपूर्ण वाक्याचे स्कॅनिंग करणे (Articles, Modals, Questions, Tenses)
+# काम: संपूर्ण वाक्याचे स्कॅनिंग करणे (Articles, Modals, Questions, Tenses, Tips & Suggestions)
 
 import grammar_brain
 
 
-def check_full_sentence(sentence):
-    # वाक्यातील जास्तीची जागा काढणे आणि सर्व शब्द छोट्या लिपीत (lowercase) करणे
-    words = sentence.strip().lower().split()
-
-    if len(words) < 2:
-        return False, "❌ कृपया किमान दोन शब्द टाका. (उदा. I am, What is)"
-
-    feedback_list = []
+def check_full_sentence(user_input):
     is_correct = True
+    feedback_list = []  # सर्व चुका आणि बरोबर गोष्टींची यादी
+    learning_tips = []  # शिकण्यासाठी नवीन टिप्सचा बॉक्स
+    suggestion = user_input
+    words = user_input.lower().split()
+
+    if len(words) == 0:
+        return False, "❌ कृपया एखादे वाक्य टाका."
+
+    # ==========================================
+    # 🌟 नवीन: वाक्य सुधारणे आणि टिप्स (Suggestions)
+    # ==========================================
+    if "completed task" in user_input.lower():
+        is_correct = False
+        feedback_list.append("🚩 Articles चा अभाव: 'Task' हे मोजता येणारे नाम आहे, त्याआधी 'the' किंवा 'a' लावा.")
+        suggestion = suggestion.replace("completed task", "completed the task")
+        learning_tips.append("🔹 नियम: जेव्हा आपण एखाद्या ठराविक कामाबद्दल बोलतो, तेव्हा 'The' वापरतात.")
+
+    if "that time" in user_input.lower() and "at that time" not in user_input.lower():
+        learning_tips.append(
+            "🔹 टीप: वेळेचा उल्लेख करताना 'At that time' किंवा 'By that time' वापरणे अधिक नैसर्गिक वाटते.")
+        suggestion = suggestion.replace("that time", "at that time")
+
+    if "had already completed" in user_input.lower():
+        learning_tips.append(
+            "🔹 काळ: हे वाक्य 'Past Perfect Tense' मध्ये आहे. भूतकाळातील दोन घटनांपैकी पहिली पूर्ण झालेली घटना सांगण्यासाठी 'Had + V3' वापरतात.")
 
     # ==========================================
     # टेस्ट १: Articles (a/an) चे नियम तपासणे
@@ -40,45 +58,49 @@ def check_full_sentence(sentence):
     # ==========================================
     # टेस्ट ३: वाक्याची रचना आणि Subject-Verb Agreement
     # ==========================================
-    first_word = words[0]
-    second_word = words[1]
+    if len(words) >= 2:
+        first_word = words[0]
+        second_word = words[1]
 
-    # प्रकार A: Wh- Question (उदा. What is...)
-    if first_word in grammar_brain.parts_of_speech.get("wh_words", []):
-        if second_word in grammar_brain.auxiliary_rules:
-            feedback_list.append(
-                f"✅ प्रश्नाची रचना बरोबर: '{first_word.capitalize()}' (Wh-word) + '{second_word}' (Auxiliary verb).")
-        else:
-            feedback_list.append(
-                f"🚩 प्रश्नाची रचना चूक: '{first_word}' नंतर साह्यकारी क्रियापद (am/is/are/do/did) यायला हवे.")
-            is_correct = False
-
-    # प्रकार B: Yes/No Question (उदा. Is he...)
-    elif first_word in grammar_brain.auxiliary_rules:
-        if second_word in grammar_brain.all_subjects or second_word in grammar_brain.parts_of_speech.get("Noun",
-                                                                                                         {}).get(
-                "उदाहरणे", []):
-            if second_word in grammar_brain.auxiliary_rules[first_word] or first_word in ["did", "had", "can", "will",
-                                                                                          "could", "should", "must"]:
+        # प्रकार A: Wh- Question
+        if first_word in grammar_brain.parts_of_speech.get("wh_words", []):
+            if second_word in grammar_brain.auxiliary_rules:
                 feedback_list.append(
-                    f"✅ Yes/No प्रश्न बरोबर: '{first_word.capitalize()}' सोबत '{second_word}' योग्य आहे.")
+                    f"✅ प्रश्नाची रचना बरोबर: '{first_word.capitalize()}' (Wh-word) + '{second_word}' (Auxiliary verb).")
             else:
-                feedback_list.append(f"🚩 Subject-Verb चूक: '{first_word.capitalize()}' सोबत '{second_word}' चालत नाही.")
-                is_correct = False
-        else:
-            feedback_list.append(f"✅ वाक्य साह्यकारी क्रियापदाने सुरू झाले आहे: '{first_word.capitalize()}'.")
-
-    # प्रकार C: साधे वाक्य (Normal Statement - उदा. He is...)
-    else:
-        if second_word in grammar_brain.auxiliary_rules:
-            if first_word in grammar_brain.auxiliary_rules[second_word] or second_word in ["did", "had", "can", "will",
-                                                                                           "could", "would", "should",
-                                                                                           "must"]:
                 feedback_list.append(
-                    f"✅ Subject-Verb Agreement: '{first_word.capitalize()}' सोबत '{second_word}' अगदी बरोबर आहे.")
-            else:
-                feedback_list.append(f"🚩 Subject-Verb चूक: '{first_word.capitalize()}' सोबत '{second_word}' येत नाही.")
+                    f"🚩 प्रश्नाची रचना चूक: '{first_word}' नंतर साह्यकारी क्रियापद (am/is/are/do/did) यायला हवे.")
                 is_correct = False
+
+        # प्रकार B: Yes/No Question
+        elif first_word in grammar_brain.auxiliary_rules:
+            if second_word in grammar_brain.all_subjects or second_word in grammar_brain.parts_of_speech.get("Noun",
+                                                                                                             {}).get(
+                    "उदाहरणे", []):
+                if second_word in grammar_brain.auxiliary_rules[first_word] or first_word in ["did", "had", "can",
+                                                                                              "will", "could", "should",
+                                                                                              "must"]:
+                    feedback_list.append(
+                        f"✅ Yes/No प्रश्न बरोबर: '{first_word.capitalize()}' सोबत '{second_word}' योग्य आहे.")
+                else:
+                    feedback_list.append(
+                        f"🚩 Subject-Verb चूक: '{first_word.capitalize()}' सोबत '{second_word}' चालत नाही.")
+                    is_correct = False
+            else:
+                feedback_list.append(f"✅ वाक्य साह्यकारी क्रियापदाने सुरू झाले आहे: '{first_word.capitalize()}'.")
+
+        # प्रकार C: साधे वाक्य
+        else:
+            if second_word in grammar_brain.auxiliary_rules:
+                if first_word in grammar_brain.auxiliary_rules[second_word] or second_word in ["did", "had", "can",
+                                                                                               "will", "could", "would",
+                                                                                               "should", "must"]:
+                    feedback_list.append(
+                        f"✅ Subject-Verb Agreement: '{first_word.capitalize()}' सोबत '{second_word}' अगदी बरोबर आहे.")
+                else:
+                    feedback_list.append(
+                        f"🚩 Subject-Verb चूक: '{first_word.capitalize()}' सोबत '{second_word}' येत नाही.")
+                    is_correct = False
 
     # ==========================================
     # टेस्ट ४: Vocabulary (शब्दांच्या जाती ओळखणे)
@@ -94,18 +116,27 @@ def check_full_sentence(sentence):
                     pos_found.append(f"{w} ({pos})")
 
     if pos_found:
-        # डुप्लिकेट शब्द काढण्यासाठी set वापरला आहे
         unique_pos = ", ".join(list(set(pos_found)))
         feedback_list.append(f"📚 शब्दांच्या जाती (Parts of Speech): {unique_pos}")
 
     # ==========================================
-    # फायनल रिपोर्ट तयार करणे
+    # फायनल रिपोर्ट तयार करणे (Merging Everything)
     # ==========================================
+    final_feedback = ""
+
     if is_correct and len(feedback_list) == 0:
-        final_feedback = "✅ वाक्य व्याकरणदृष्ट्या योग्य वाटत आहे!"
+        final_feedback += "✅ वाक्य व्याकरणदृष्ट्या योग्य वाटत आहे!\n"
     elif is_correct:
-        final_feedback = "✅ मुख्य व्याकरण बरोबर आहे!\n" + "-" * 30 + "\n" + "\n".join(feedback_list)
+        final_feedback += "✅ मुख्य व्याकरण बरोबर आहे!\n" + "-" * 30 + "\n" + "\n".join(feedback_list) + "\n"
     else:
-        final_feedback = "❌ वाक्यात काही चुका आहेत:\n" + "-" * 30 + "\n" + "\n".join(feedback_list)
+        final_feedback += "❌ वाक्यात काही चुका आहेत:\n" + "-" * 30 + "\n" + "\n".join(feedback_list) + "\n"
+
+    # जर काही 'Suggestion' असेल (वाक्य बदलले असेल)
+    if suggestion.lower() != user_input.lower():
+        final_feedback += f"------------------------------\n💡 असे असायला हवे होते: {suggestion.capitalize()}\n"
+
+    # जर काही 'Tips' असतील
+    if learning_tips:
+        final_feedback += f"\n🎓 शिकण्यासाठी टिप्स:\n" + "\n".join(learning_tips)
 
     return is_correct, final_feedback

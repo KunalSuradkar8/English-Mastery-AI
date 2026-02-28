@@ -105,3 +105,21 @@ def show_my_progress():
 
 
 print("📊 Advanced Progress Tracker लोड झाला आहे! (TXT + CSV + SQL)")
+
+
+# progress_tracker.py च्या सर्वात खाली हे जोडा:
+
+def get_stats():
+    """डेटाबेसमधून बरोबर आणि चुकीच्या उत्तरांची संख्या मोजणे"""
+    conn = sqlite3.connect("english_database.db")
+    cursor = conn.cursor()
+
+    # SQL मधील 'COUNT' वापरून मोजणी करणे
+    cursor.execute("SELECT COUNT(*) FROM study_records WHERE result LIKE '%right%'")
+    correct = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM study_records WHERE result LIKE '%CHUKLA%'")
+    incorrect = cursor.fetchone()[0]
+
+    conn.close()
+    return correct, incorrect

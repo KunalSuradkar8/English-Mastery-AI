@@ -7,7 +7,7 @@ import english_tutor
 import progress_tracker
 from deep_translator import GoogleTranslator
 import sqlite3  # 🌟 नवीन: डेटाबेस वाचण्यासाठी आपण हे टूल खिडकीतही बोलावले
-
+import analytics_engine
 
 def check_grammar(event=None):
     user_input = entry_sentence.get().strip().lower()
@@ -35,6 +35,11 @@ def check_grammar(event=None):
             text_result.insert(tk.END, line + "\n", "cyan_text")
         elif "🌐" in line:
             text_result.insert(tk.END, line + "\n", "yellow_text")
+
+        # 🌟 ही नवीन ओळ इथे ADD कर:
+        elif "💡" in line:
+            text_result.insert(tk.END, line + "\n", "suggestion_text")
+
         elif "✅" in line:
             text_result.insert(tk.END, line + "\n", "green_text")
         elif "🚩" in line or "❌" in line:
@@ -158,6 +163,12 @@ btn_show = tk.Button(frame_buttons, text="Show Report (SQL) 🗄️", font=("Seg
                      command=show_progress)
 btn_show.grid(row=0, column=1, padx=20)
 
+btn_stats = tk.Button(frame_buttons, text="Analytics 📊", font=("Segoe UI", 13, "bold"),
+                      bg="#FF9100", fg="white", activebackground="#FFAB40",
+                      padx=25, pady=10, borderwidth=0, cursor="hand2",
+                      command=analytics_engine.show_analytics) # 🌟 ग्राफ दाखवण्यासाठी
+btn_stats.grid(row=0, column=2, padx=20) # तिसऱ्या कॉलममध्ये बसवले
+
 text_result = tk.Text(root, font=("Consolas", 14), height=14, width=65, bg="#1E1E1E", fg="#FFFFFF", relief="flat",
                       padx=20, pady=20)
 text_result.pack(pady=25)
@@ -170,5 +181,7 @@ text_result.tag_config("red_text", foreground="#FF5252")
 text_result.tag_config("blue_text", foreground="#40C4FF")
 text_result.tag_config("white_text", foreground="#FFFFFF")
 text_result.tag_config("gray_text", foreground="#555555")
+# हे तुझ्या gui_main.py च्या एकदम शेवटी (Mainloop च्या आधी) टाक:
+text_result.tag_config("suggestion_text", foreground="#FF4081", font=("Consolas", 14, "italic"))
 
 root.mainloop()
