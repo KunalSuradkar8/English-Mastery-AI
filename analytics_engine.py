@@ -23,7 +23,7 @@ def show_analytics():
     ax.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%',
            shadow=True, startangle=140, textprops={'fontsize': 12, 'color': 'white'})
 
-    plt.title("🎓 My English Progress Report", fontsize=15, color='#FFD700')
+    plt.title(" My English Progress Report", fontsize=15, color='#FFD700')
 
     # ४. आलेख दाखवणे
     plt.show()

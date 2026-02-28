@@ -1,7 +1,7 @@
 # फाईलचे नाव: main.py
 # काम: युजरकडून माहिती घेणे आणि 'show' कमांड हाताळणे (The Manager)
 
-import english_tutor
+import english_tutor_rulesr
 import progress_tracker
 
 
@@ -35,7 +35,7 @@ def start_program():
         verb = words[1]
 
         # english_tutor कडून वाक्य चेक करून घेणे
-        feedback = english_tutor.check_my_english(subject, verb)
+        feedback = english_tutor_rulesr.check_my_english(subject, verb)
         print(feedback)
 
         # वाक्य बरोबर आले की चूक ते ओळखणे
